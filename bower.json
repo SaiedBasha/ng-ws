@@ -20,7 +20,7 @@
   ],
   "license": "MIT",
   "homepage": "https://github.com/SaiedBasha",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
