@@ -1,0 +1,27 @@
+{
+  "name": "ng-ws",
+  "version": "0.0.1",
+  "description": "AngularJS HTML5 WebSocket wrapper module for HTML5 WebSocket with aditional features",
+  "main": "ng-ws.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaiedBasha/ng-ws.git"
+  },
+  "keywords": [
+    "ng-ws",
+    "ng",
+    "ws",
+    "angular",
+    "angularjs",
+    "websocket"
+  ],
+  "author": "Saied Basha <saied2504@gmail.com> (https://github.com/SaiedBasha)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SaiedBasha/ng-ws/issues"
+  },
+  "homepage": "https://github.com/SaiedBasha/ng-ws#readme"
+}
