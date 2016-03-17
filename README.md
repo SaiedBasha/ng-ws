@@ -1,7 +1,7 @@
 ng-ws
 ============
 
-**AngularJS HTML5 WebSocket** powerful wrapper module for HTML5 WebSocket with aditional features!
+**AngularJS HTML5 WebSocket** wrapper module for HTML5 WebSocket with aditional features!
 
 # Index
 
