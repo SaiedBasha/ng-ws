@@ -14,6 +14,22 @@ ng-ws
     - [Lazy Open](#lazyOpen)
     - [Enqueue Unsent Messages](#enqueue)
   - [API](#api)
+	- [Methods](#methods)
+	 - [init](#init)
+	 - [open](#open)
+	 - [send](#send)
+	 - [close](#close)
+	 - [getState](#getState)
+	 - [updateConfig](#updateConfig)
+	 - [on](#on)
+	 - [un](#un)
+	- [Memders](#members)
+	 - [queue](#queue)
+	- [Events](#events)
+	 - [open](#open)
+	 - [message](#message)
+	 - [close](#close)
+	 - [error](#error)
   - [License](#license)
 
 # Introduction
@@ -27,11 +43,18 @@ The only requirement needed is [AngularJS](https://angularjs.org/) that you can 
 
 # Installation
 
+Use [npm](https://www.npmjs.com/) to install this module:
+
+```bash
+$ npm install ng-ws
+```
+
 Use [Bower](http://bower.io/) to install this module:
 
 ```bash
 $ bower install ng-ws
 ```
+
 # Usage
 
 After the [Installation](#installation), require it in your Angular application.
@@ -42,6 +65,16 @@ Firstly, in your `index.html`:
 <html>
     <head>
         <script src="bower_components/ng-ws/ng-ws.js"></script>
+    </head>
+</html>
+```
+
+or
+
+```html
+<html>
+    <head>
+        <script src="node_modules/ng-ws/ng-ws.js"></script>
     </head>
 </html>
 ```
@@ -64,7 +97,7 @@ Usage,
 angular.module('MyApp', ['ng-ws'])
     .run(function ($ws) {
         var ws = $ws.init({
-			url: 'ws://' + host + ':' + port + '?token=' + token,
+			url: 'ws://someUrl',
 			reconnect: true,
             reconnectInterval: 2000,
             lazyOpen: false,
@@ -120,7 +153,7 @@ By default, reconnect is enabled, and default interval is 2000 milliseconds
 
 ```javascript
 var ws = $ws.init({
-			url: 'ws://' + host + ':' + port + '?token=' + token,
+			url: 'ws://someUrl',
 			reconnect: true,
             reconnectInterval: 2000,
             lazyOpen: false,
@@ -136,7 +169,7 @@ By default, lazyOpen is disabled
 
 ```javascript
 var ws = $ws.init({
-			url: 'ws://' + host + ':' + port + '?token=' + token,
+			url: 'ws://someUrl',
 			reconnect: true,
             reconnectInterval: 2000,
             lazyOpen: true,
@@ -155,7 +188,7 @@ By default, enqueue is disabled
 
 ```javascript
 var ws = $ws.init({
-			url: 'ws://' + host + ':' + port + '?token=' + token,
+			url: 'ws://someUrl',
 			reconnect: true,
             reconnectInterval: 2000,
             lazyOpen: false,
@@ -167,25 +200,349 @@ var ws = $ws.init({
 
 # API
 
-ng-ws methods:
+## methods:
 
- - init
- - open
- - send
- - close
- - getState
- - updateConfig
- - queue
- - on
- - un
+### init
+
+initialize websocket instance with custom configuration, only the 'url' is mandatory, other fields are optionals:
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+});
+```
+
+**Usage**
+
+```javascript
+$ws.init({
+	url: 'ws://someUrl',
+	reconnect: true,
+	reconnectInterval: 2000,
+	lazyOpen: false,
+	protocols: null,
+	enqueue: false
+});
+```
+
+**Arguments**
+
+| **Param** | **Type** | **Details** |
+| --------- | -------- | ----------- |
+| config    | Object   | ws configuration |
+
+**Returns**
+
+| **Type** | **Details** |
+| -------- | ----------- |
+| ws | the websocket wrapper |
+
+### open
+
+open websocket instance connection if the connection closed or if you used 'lazyOpen' in 'init' method:
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+		
+	ws.open();
+});
+```
+
+**Usage**
+
+```javascript
+ws.open();
+```
+
+### send
+
+send data to websocket server:
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+		
+	ws.send('some data');
+});
+```
+
+**Usage**
+
+```javascript
+ws.send('some data');
+```
+
+**Arguments**
+
+| **Param** | **Type** | **Details** |
+| --------- | -------- | ----------- |
+|   data    | String or ArrayBuffer or Blob   | data to be sent to server |
+
+### close
+
+close websocket connection:
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+		
+	ws.close();
+});
+```
+
+**Usage**
+
+```javascript
+ws.close(code, reason);
+```
+
+**Arguments**
+
+| **Param** | **Type** | **Details** |
+| --------- | -------- | ----------- |
+|   code    | unsigned short   | An optional numeric value indicating the status code explaining why the connection is being closed, [status codes](https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes) |
+|   reason    | string   | An optional human-readable string explaining why the connection is closing |
+
+### getState
+
+get websocket state:
+
+| **value** | **Details** |
+| --------- | ----------- |
+|    -1     | NOT_INITIALIZED |
+|     0     | CONNECTING      |
+|     1     | OPEN            |
+|     2     | CLOSING         |
+|     3     | CLOSED          |
+
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+		
+	var state = ws.getState();
+});
+```
+
+**Usage**
+
+```javascript
+var state = ws.getState();
+```
+
+**Returns**
+
+| **Type** | **Details** |
+| -------- | ----------- |
+| int | websocket connection state |
+
+
+### updateConfig
+
+update configuration, this will close the connection and initialize it with new config:
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+		
+	ws.updateConfig({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 500,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+});
+```
+
+**Usage**
+
+```javascript
+ws.updateConfig({
+	url: 'ws://someUrl',
+	reconnect: true,
+	reconnectInterval: 500,
+	lazyOpen: false,
+	protocols: null,
+	enqueue: false
+});
+```
+
+**Arguments**
+
+| **Param** | **Type** | **Details** |
+| --------- | -------- | ----------- |
+| config    | Object   | ws configuration |
+
+### on
+
+Attach a handler to  an event:
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+		
+	ws.on('open', function(){
+		console.log('Connection open ...');
+	});
+});
+```
+
+**Usage**
+
+```javascript
+ws.on('eventName', function(e) { ; });
+```
+
+**Arguments**
+
+| **Param** | **Type** | **Details** |
+| --------- | -------- | ----------- |
+| eventName | String   | event name  |
+| handler   | Function | event handler  function |
+
+### un
+
+Unattach handler from event
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: false
+		});
+		
+	var onOpen = function(e) {
+	};
+	
+	ws.on('open', onOpen);
+	
+	ws.un('open', onOpen);
+});
+```
+
+**Usage**
+
+```javascript
+ws.un('eventName', function(){ ; });
+```
+
+**Arguments**
+
+| **Param** | **Type** | **Details** |
+| --------- | -------- | ----------- |
+| eventName | String   | event name  |
+| handler   | Function | event handler  function |
+
+## Memders
+
+### queue
+
+the unset data to the server, in case enqueue config value enabled and the connection not open:
+
+```javascript
+angular.config(function ($ws) {
+    var ws = $ws.init({
+			url: 'ws://someUrl',
+			reconnect: true,
+            reconnectInterval: 2000,
+            lazyOpen: false,
+            protocols: null,
+            enqueue: true
+		});
+	
+	console.log(ws.queue.length);
+});
+```
+
+**Usage**
+
+```javascript
+ws.queue;
+```
+
+**Description**
+
+| **Type** | **Details** |
+| -------- | ----------- |
+| Array | un sent messages to server |
+
+
 			
-ng-ws events:
+## events:
 
- - open
- - message
- - close
- - error
- 
+HTML5 WebSocket [events] (https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+
+### open
+
+An event listener to be called when the WebSocket connection's readyState changes to OPEN; this indicates that the connection is ready to send and receive data. The event is a simple one with the name "open".
+
+### message
+
+An event listener to be called when a message is received from the server. The listener receives a MessageEvent named "message".
+
+### close
+
+An event listener to be called when the WebSocket connection's readyState changes to CLOSED. The listener receives a CloseEvent named "close".
+
+### error
+
+An event listener to be called when an error occurs. This is a simple event named "error".
 
 # License
 
