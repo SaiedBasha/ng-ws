@@ -1,6 +1,6 @@
 {
   "name": "ng-ws",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "AngularJS HTML5 WebSocket wrapper module for HTML5 WebSocket with aditional features",
   "main": "ng-ws.js",
   "scripts": {
